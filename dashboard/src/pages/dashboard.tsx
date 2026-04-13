@@ -5,6 +5,7 @@ import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { ClusterHealth } from "@/components/dashboard/cluster-health";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { useClusters } from "@/context/cluster-context";
+import { useActivity } from "@/hooks/use-activity";
 import { useClusterNodes } from "@/hooks/use-cluster-nodes";
 
 export function DashboardPage() {
@@ -12,6 +13,11 @@ export function DashboardPage() {
   const { nodes, loading: nodesLoading, error } = useClusterNodes(
     currentCluster?.id ?? null
   );
+  const {
+    entries: activityEntries,
+    loading: activityLoading,
+    error: activityError,
+  } = useActivity(currentCluster?.id ?? null);
 
   if (clustersLoading) {
     return (
@@ -115,11 +121,17 @@ export function DashboardPage() {
             Recent activity
           </CardTitle>
           <span className="font-mono text-[11px] text-muted-foreground">
-            last 4h
+            {activityEntries.length > 0
+              ? `${activityEntries.length} entries`
+              : ""}
           </span>
         </CardHeader>
         <CardContent>
-          <ActivityFeed />
+          <ActivityFeed
+            entries={activityEntries}
+            loading={activityLoading}
+            error={activityError}
+          />
         </CardContent>
       </Card>
     </div>

@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-from models import Cluster, Node, Token, Workload
+from models import ActivityEntry, Cluster, Node, Token, Workload
 
 
 def _ago(days: float = 0, hours: float = 0, minutes: float = 0) -> datetime:
@@ -16,6 +16,7 @@ clusters: dict[str, Cluster] = {}
 nodes: dict[str, Node] = {}
 workloads: dict[str, Workload] = {}
 tokens: dict[str, Token] = {}
+activity: list[ActivityEntry] = []
 
 
 def seed() -> None:
@@ -113,9 +114,75 @@ def seed() -> None:
     for n in seeded:
         nodes[n.id] = n
 
+    seeded_activity: list[ActivityEntry] = [
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=home_cluster.id,
+            timestamp=_ago(minutes=3),
+            level="info",
+            node="beelink-01",
+            message="kubelet heartbeat ok",
+        ),
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=home_cluster.id,
+            timestamp=_ago(minutes=18),
+            level="warn",
+            node="old-thinkpad",
+            message="node went offline — last seen 18m ago",
+        ),
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=home_cluster.id,
+            timestamp=_ago(hours=1, minutes=12),
+            level="info",
+            node="beelink-01",
+            message="scheduled 2 workloads onto beelink-01",
+        ),
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=home_cluster.id,
+            timestamp=_ago(hours=3, minutes=44),
+            level="info",
+            node="beelink-01",
+            message="control-plane cert rotation complete",
+        ),
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=cloud_cluster.id,
+            timestamp=_ago(minutes=7),
+            level="warn",
+            node="hetzner-fsn-2",
+            message="node marked draining — 2 workloads being evicted",
+        ),
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=cloud_cluster.id,
+            timestamp=_ago(minutes=42),
+            level="error",
+            node="do-nyc-1",
+            message="image pull backoff: registry.kompute.local/api:v0.3.1",
+        ),
+        ActivityEntry(
+            id=str(uuid4()),
+            cluster_id=cloud_cluster.id,
+            timestamp=_ago(hours=2, minutes=5),
+            level="info",
+            node="do-nyc-1",
+            message="joined cluster prod-cloud",
+        ),
+    ]
+    activity.extend(seeded_activity)
+
 
 def nodes_for_cluster(cluster_id: str) -> list[Node]:
     return [n for n in nodes.values() if n.cluster_id == cluster_id]
+
+
+def activity_for_cluster(cluster_id: str, limit: int = 50) -> list[ActivityEntry]:
+    entries = [a for a in activity if a.cluster_id == cluster_id]
+    entries.sort(key=lambda a: a.timestamp, reverse=True)
+    return entries[:limit]
 
 
 seed()

@@ -40,10 +40,13 @@ export interface ClusterHealth {
   version: string;
 }
 
+export type ActivityLevel = "info" | "warn" | "error";
+
 export interface ActivityEntry {
   id: string;
+  cluster_id: string;
   timestamp: string;
-  level: "info" | "warn" | "error";
+  level: ActivityLevel;
   node: string;
   message: string;
 }

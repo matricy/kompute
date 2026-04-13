@@ -22,7 +22,7 @@ const navItems = [
 
 export function Sidebar() {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 flex w-[220px] flex-col border-r border-[#1e1e1e] bg-[#0f0f0f]">
+    <aside className="fixed inset-y-0 left-0 z-30 flex w-55 flex-col border-r border-[#1e1e1e] bg-[#0f0f0f]">
       {/* Brand */}
       <div className="flex h-14 items-center gap-2.5 border-b border-[#1e1e1e] px-5">
         <div className="relative flex size-6 items-center justify-center rounded-[5px] bg-primary">
@@ -58,7 +58,7 @@ export function Sidebar() {
                   <>
                     <span
                       className={cn(
-                        "absolute inset-y-1 left-0 w-[2px] rounded-r-full bg-primary transition-opacity",
+                        "absolute inset-y-1 left-0 w-0.5 rounded-r-full bg-primary transition-opacity",
                         isActive ? "opacity-100" : "opacity-0"
                       )}
                     />

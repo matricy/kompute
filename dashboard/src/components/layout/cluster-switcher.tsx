@@ -48,7 +48,7 @@ export function ClusterSwitcher() {
           <ChevronsUpDown className="size-3.5 text-muted-foreground" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-[200px]">
+      <DropdownMenuContent align="start" className="w-50">
         <DropdownMenuLabel>Clusters</DropdownMenuLabel>
         {clusters.map((c) => {
           const isActive = c.id === currentCluster?.id;

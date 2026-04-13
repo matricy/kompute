@@ -1,8 +1,10 @@
 import type {
+  ActivityEntry,
   Cluster,
   ClusterHealth,
   Node,
   NodeProvider,
+  ProviderOption,
 } from "@/types";
 
 const BASE = "/api";
@@ -66,6 +68,8 @@ export const api = {
   getClusterHealth: (id: string) =>
     request<ClusterHealth>(`/clusters/${id}/health`),
 
+  listProviders: () => request<ProviderOption[]>("/providers"),
+
   listNodes: (clusterId: string) =>
     request<Node[]>(`/clusters/${clusterId}/nodes`),
   provisionNode: (clusterId: string, req: ProvisionRequest) =>
@@ -81,4 +85,9 @@ export const api = {
     request<void>(`/clusters/${clusterId}/nodes/${nodeId}`, {
       method: "DELETE",
     }),
+
+  listActivity: (clusterId: string, limit?: number) => {
+    const qs = limit !== undefined ? `?limit=${limit}` : "";
+    return request<ActivityEntry[]>(`/clusters/${clusterId}/activity${qs}`);
+  },
 };

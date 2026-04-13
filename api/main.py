@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from models import RootInfo
-from routers import clusters, nodes, tokens, workloads
+from routers import activity, clusters, nodes, providers, tokens, workloads
 
 app = FastAPI(title="Kompute API", version="0.1.0")
 
@@ -18,6 +18,8 @@ app.add_middleware(
 
 app.include_router(clusters.router)
 app.include_router(nodes.router)
+app.include_router(activity.router)
+app.include_router(providers.router)
 app.include_router(workloads.router)
 app.include_router(tokens.router)
 

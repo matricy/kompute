@@ -18,9 +18,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useProviders } from "@/hooks/use-providers";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { providerOptions } from "@/data/providers";
 import type { NodeProvider } from "@/types";
 
 type Step = "provider" | "config" | "provisioning";
@@ -56,9 +56,15 @@ export function AddCloudNodeSheet({
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   const [provisionError, setProvisionError] = useState<string | null>(null);
 
+  const {
+    providers: providerOptions,
+    loading: providersLoading,
+    error: providersError,
+  } = useProviders(open);
+
   const providerOpt = useMemo(
     () => providerOptions.find((p) => p.id === provider) ?? null,
-    [provider]
+    [providerOptions, provider]
   );
 
   useEffect(() => {
@@ -138,7 +144,19 @@ export function AddCloudNodeSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6">
-          {step === "provider" && (
+          {step === "provider" && providersLoading && (
+            <div className="rounded-lg border border-dashed border-border bg-surface/60 p-12 text-center text-sm text-muted-foreground">
+              Loading providers…
+            </div>
+          )}
+
+          {step === "provider" && providersError && !providersLoading && (
+            <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive-foreground">
+              {providersError}
+            </div>
+          )}
+
+          {step === "provider" && !providersLoading && !providersError && (
             <div className="flex flex-col gap-3">
               {providerOptions.map((p) => (
                 <button
