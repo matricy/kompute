@@ -1,12 +1,20 @@
-from __future__ import annotations
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from lib.config import load_config
 from models import RootInfo
 from routers import activity, clusters, nodes, providers, tokens, workloads
 
-app = FastAPI(title="Kompute API", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.config = load_config()
+    yield
+
+
+app = FastAPI(title="Kompute API", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
