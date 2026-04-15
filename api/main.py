@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from lib.config import load_config
 from models import RootInfo
-from routers import activity, clusters, nodes, providers, tokens, workloads
+from routers import activity, cloud_account, clusters, nodes, providers, workloads
 
 
 @asynccontextmanager
@@ -29,7 +29,7 @@ app.include_router(nodes.router)
 app.include_router(activity.router)
 app.include_router(providers.router)
 app.include_router(workloads.router)
-app.include_router(tokens.router)
+app.include_router(cloud_account.router)
 
 
 @app.get("/", response_model=RootInfo)

@@ -3,17 +3,21 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from models.cloud_account import CloudProvider
+
 
 class CloudAccountRef(BaseModel):
     id: str
-    provider: Literal["hetzner", "digitalocean", "aws"]
+    provider: CloudProvider
     keyring_ref: str
+    name: str
+    created_at: datetime
 
 
 class ClusterRecord(BaseModel):
     id: str
     name: str
-    provider: Literal["hetzner", "digitalocean", "aws"]
+    provider: CloudProvider
     cloud_account_id: str
     kubeconfig_path: str
     ssh_key_path: str

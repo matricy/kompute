@@ -1,5 +1,8 @@
 import type {
   ActivityEntry,
+  CloudAccount,
+  CloudAccountRef,
+  CloudProvider,
   Cluster,
   ClusterHealth,
   Node,
@@ -55,6 +58,12 @@ export interface CreateClusterRequest {
   labels?: Record<string, string>;
 }
 
+export interface CreateCloudAccountRequest {
+  provider: CloudProvider;
+  name: string;
+  token: string;
+}
+
 export const api = {
   listClusters: () => request<Cluster[]>("/clusters"),
   getCluster: (id: string) => request<Cluster>(`/clusters/${id}`),
@@ -90,4 +99,15 @@ export const api = {
     const qs = limit !== undefined ? `?limit=${limit}` : "";
     return request<ActivityEntry[]>(`/clusters/${clusterId}/activity${qs}`);
   },
+
+  listCloudAccounts: () => request<CloudAccountRef[]>("/cloud-accounts"),
+  getCloudAccount: (id: string) =>
+    request<CloudAccountRef>(`/cloud-accounts/${id}`),
+  createCloudAccount: (req: CreateCloudAccountRequest) =>
+    request<CloudAccount>("/cloud-accounts", {
+      method: "POST",
+      body: JSON.stringify(req),
+    }),
+  deleteCloudAccount: (id: string) =>
+    request<void>(`/cloud-accounts/${id}`, { method: "DELETE" }),
 };

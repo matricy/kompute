@@ -14,3 +14,7 @@ def load_config() -> Config:
         config = Config().model_dump_json(indent=2)
         CONFIG_FILE.write_text(config)
     return Config.model_validate_json(CONFIG_FILE.read_text())
+
+
+def save_config(config: Config) -> None:
+    CONFIG_FILE.write_text(config.model_dump_json(indent=2))

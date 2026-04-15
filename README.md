@@ -63,7 +63,6 @@ Dashboard is now at `http://localhost:5173`. Vite proxies `/api` to
 | POST   | `/api/nodes/{id}/drain`     | Move node to `draining`                   |
 | GET    | `/api/cluster/health`       | Cluster status + k3s version              |
 | GET    | `/api/workloads`            | (stub)                                    |
-| GET    | `/api/tokens`               | (stub)                                    |
 
 The store is in-memory for now and seeds four mock nodes on boot
 (`beelink-01`, `do-nyc-1`, `old-thinkpad`, `hetzner-fsn-2`) so the dashboard

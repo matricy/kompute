@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-from models import ActivityEntry, Cluster, Node, Token, Workload
+from models import ActivityEntry, Cluster, Node, Workload
 
 
 def _ago(days: float = 0, hours: float = 0, minutes: float = 0) -> datetime:
@@ -15,7 +15,6 @@ def _ago(days: float = 0, hours: float = 0, minutes: float = 0) -> datetime:
 clusters: dict[str, Cluster] = {}
 nodes: dict[str, Node] = {}
 workloads: dict[str, Workload] = {}
-tokens: dict[str, Token] = {}
 activity: list[ActivityEntry] = []
 
 

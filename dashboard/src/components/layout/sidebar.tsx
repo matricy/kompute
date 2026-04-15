@@ -2,9 +2,9 @@ import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   Server,
+  Cloud,
   Box,
   Database,
-  Key,
   Settings,
 } from "lucide-react";
 
@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/nodes", label: "Nodes", icon: Server },
+  { to: "/cloud-accounts", label: "Cloud Accounts", icon: Cloud },
   { to: "/workloads", label: "Workloads", icon: Box },
   { to: "/volumes", label: "Volumes", icon: Database },
-  { to: "/tokens", label: "Tokens", icon: Key },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 

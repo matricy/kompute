@@ -58,3 +58,20 @@ export interface ProviderOption {
   regions: { value: string; label: string }[];
   sizes: { value: string; label: string; specs: string }[];
 }
+
+export type CloudProvider = "digital_ocean" | "hetzner" | "aws";
+
+export interface CloudAccount {
+  id: string;
+  provider: CloudProvider;
+  name: string;
+  created_at: string;
+}
+
+export interface CloudAccountRef {
+  id: string;
+  provider: CloudProvider;
+  keyring_ref: string;
+  name: string;
+  created_at: string;
+}
