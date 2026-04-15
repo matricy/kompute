@@ -5,27 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AddCloudAccountSheet } from "@/components/cloud-accounts/add-cloud-account-sheet";
+import { ProviderMark } from "@/components/cloud-accounts/provider-mark";
 import { useCloudAccounts } from "@/hooks/use-cloud-accounts";
 import { api } from "@/lib/api";
-import { cn } from "@/lib/utils";
 import { formatRelativeTime } from "@/lib/utils";
 import type { CloudAccountRef, CloudProvider } from "@/types";
 
 const providerLabels: Record<CloudProvider, string> = {
   digital_ocean: "DigitalOcean",
   hetzner: "Hetzner",
-  aws: "AWS",
-};
-
-const providerStyles: Record<CloudProvider, string> = {
-  digital_ocean: "bg-[#0080ff]/15 text-[#5aa9ff]",
-  hetzner: "bg-[#ff6b00]/15 text-[#ffa35a]",
-  aws: "bg-[#ff9900]/15 text-[#ffc24d]",
-};
-
-const providerLetters: Record<CloudProvider, string> = {
-  digital_ocean: "DO",
-  hetzner: "HZ",
   aws: "AWS",
 };
 
@@ -87,14 +75,7 @@ export function CloudAccountsPage() {
               key={account.id}
               className="flex items-center gap-4 border-border bg-surface p-4"
             >
-              <div
-                className={cn(
-                  "flex size-10 shrink-0 items-center justify-center rounded-md font-mono text-[11px] font-semibold",
-                  providerStyles[account.provider]
-                )}
-              >
-                {providerLetters[account.provider]}
-              </div>
+              <ProviderMark provider={account.provider} />
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">

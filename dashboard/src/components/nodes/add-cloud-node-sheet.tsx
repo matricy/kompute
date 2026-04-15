@@ -18,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { ProviderMark } from "@/components/cloud-accounts/provider-mark";
 import { useProviders } from "@/hooks/use-providers";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -169,7 +170,7 @@ export function AddCloudNodeSheet({
                       : "border-border bg-surface hover:border-[#2b2b2b]"
                   )}
                 >
-                  <ProviderMark provider={p.id} />
+                  <ProviderMark provider={p.id as NodeProvider} />
                   <div className="flex-1">
                     <div className="font-medium text-foreground">
                       {p.label}
@@ -395,27 +396,3 @@ function StepIndicator({ step }: { step: Step }) {
   );
 }
 
-function ProviderMark({ provider }: { provider: NodeProvider }) {
-  const styles: Record<NodeProvider, string> = {
-    home: "bg-primary/15 text-primary",
-    digitalocean: "bg-[#0080ff]/15 text-[#5aa9ff]",
-    hetzner: "bg-[#ff6b00]/15 text-[#ffa35a]",
-    aws: "bg-[#ff9900]/15 text-[#ffc24d]",
-  };
-  const letters: Record<NodeProvider, string> = {
-    home: "H",
-    digitalocean: "DO",
-    hetzner: "HZ",
-    aws: "AWS",
-  };
-  return (
-    <div
-      className={cn(
-        "flex size-10 shrink-0 items-center justify-center rounded-md font-mono text-[11px] font-semibold",
-        styles[provider]
-      )}
-    >
-      {letters[provider]}
-    </div>
-  );
-}

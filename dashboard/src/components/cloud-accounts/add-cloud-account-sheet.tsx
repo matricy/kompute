@@ -4,13 +4,6 @@ import { Check, KeyRound, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -18,6 +11,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { ProviderMark } from "@/components/cloud-accounts/provider-mark";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { CloudProvider } from "@/types";
@@ -46,17 +40,6 @@ const providers: { id: CloudProvider; label: string; description: string }[] = [
   },
 ];
 
-const providerStyles: Record<CloudProvider, string> = {
-  digital_ocean: "bg-[#0080ff]/15 text-[#5aa9ff]",
-  hetzner: "bg-[#ff6b00]/15 text-[#ffa35a]",
-  aws: "bg-[#ff9900]/15 text-[#ffc24d]",
-};
-
-const providerLetters: Record<CloudProvider, string> = {
-  digital_ocean: "DO",
-  hetzner: "HZ",
-  aws: "AWS",
-};
 
 export function AddCloudAccountSheet({
   open,
@@ -128,14 +111,7 @@ export function AddCloudAccountSheet({
                         : "border-border bg-surface hover:border-[#2b2b2b]"
                     )}
                   >
-                    <div
-                      className={cn(
-                        "flex size-10 shrink-0 items-center justify-center rounded-md font-mono text-[11px] font-semibold",
-                        providerStyles[p.id]
-                      )}
-                    >
-                      {providerLetters[p.id]}
-                    </div>
+                    <ProviderMark provider={p.id} />
                     <div className="flex-1">
                       <div className="font-medium text-foreground">
                         {p.label}
