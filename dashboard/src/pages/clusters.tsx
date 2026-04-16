@@ -1,55 +1,33 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Check, Plus, Server } from "lucide-react";
+import { useState } from "react";
+import { Check, Plus, Server, Trash2 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { AddClusterSheet } from "@/components/clusters/add-cluster-sheet";
 import { useClusters } from "@/context/cluster-context";
-import { api } from "@/lib/api";
-import { cn } from "@/lib/utils";
-import type { ClusterStatus } from "@/types";
-
-const statusLabels: Record<ClusterStatus, string> = {
-  healthy: "Healthy",
-  degraded: "Degraded",
-  down: "Down",
-  provisioning: "Provisioning",
-};
-
-const statusDot: Record<ClusterStatus, string> = {
-  healthy: "bg-primary",
-  degraded: "bg-yellow-500",
-  down: "bg-destructive",
-  provisioning: "bg-blue-500",
-};
+import { formatRelativeTime } from "@/lib/utils";
 
 export function ClustersPage() {
-  const { clusters, currentClusterId, setCurrentClusterId, loading } =
-    useClusters();
-  const [nodeCounts, setNodeCounts] = useState<Record<string, number>>({});
+  const {
+    clusters,
+    currentClusterId,
+    setCurrentClusterId,
+    deleteCluster,
+    loading,
+  } = useClusters();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const entries = await Promise.all(
-        clusters.map(async (c) => {
-          try {
-            const nodes = await api.listNodes(c.id);
-            return [c.id, nodes.length] as const;
-          } catch {
-            return [c.id, 0] as const;
-          }
-        })
-      );
-      if (!cancelled) {
-        setNodeCounts(Object.fromEntries(entries));
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [clusters]);
+  const handleDelete = async (id: string) => {
+    setDeleting(id);
+    try {
+      await deleteCluster(id);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -62,7 +40,7 @@ export function ClustersPage() {
             Every Kompute cluster you manage from this dashboard.
           </p>
         </div>
-        <Button>
+        <Button onClick={() => setSheetOpen(true)}>
           <Plus className="size-4" /> New cluster
         </Button>
       </header>
@@ -72,86 +50,68 @@ export function ClustersPage() {
           Loading clusters…
         </div>
       ) : clusters.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface/60 p-12 text-center text-sm text-muted-foreground">
-          No clusters yet. Create your first one to get started.
+        <div className="rounded-lg border border-dashed border-border bg-surface/60 p-12 text-center">
+          <Server className="mx-auto mb-3 size-8 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">
+            No clusters yet. Create your first one to get started.
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="flex flex-col gap-3">
           {clusters.map((c) => {
             const isCurrent = c.id === currentClusterId;
-            const count = nodeCounts[c.id] ?? 0;
             return (
               <Card
                 key={c.id}
-                className={cn(
-                  "transition-colors",
-                  isCurrent && "border-primary/40"
-                )}
+                className="flex items-center gap-4 border-border bg-surface p-4"
               >
-                <CardContent className="flex flex-col gap-4 p-5">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={cn(
-                            "size-1.5 rounded-full",
-                            statusDot[c.status]
-                          )}
-                        />
-                        <span className="truncate text-[15px] font-semibold text-foreground">
-                          {c.name}
-                        </span>
-                      </div>
-                      <div className="mt-1 font-mono text-[11px] text-muted-foreground">
-                        {c.version}
-                      </div>
-                    </div>
-                    <Badge variant="secondary">{statusLabels[c.status]}</Badge>
-                  </div>
+                <div className="flex size-9 items-center justify-center rounded-md bg-primary/10">
+                  <Server className="size-4 text-primary" />
+                </div>
 
-                  <div className="flex items-center gap-4 text-[12px] text-muted-foreground">
-                    <span className="flex items-center gap-1.5">
-                      <Server className="size-3.5" />
-                      {count} node{count === 1 ? "" : "s"}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-sm font-medium text-foreground">
+                      {c.name}
                     </span>
-                    {c.control_plane_endpoint && (
-                      <span className="truncate font-mono text-[11px]">
-                        {c.control_plane_endpoint}
+                    {isCurrent && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                        <Check className="size-3" /> Current
                       </span>
                     )}
                   </div>
+                  <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
+                    <span className="font-mono">{c.id}</span>
+                    <span>Created {formatRelativeTime(c.created_at)}</span>
+                  </div>
+                </div>
 
-                  <div className="flex items-center justify-between">
-                    {isCurrent ? (
-                      <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-primary">
-                        <Check className="size-3.5" /> Current
-                      </span>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentClusterId(c.id)}
-                      >
-                        Switch to
-                      </Button>
-                    )}
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="sm"
-                      className="text-muted-foreground"
-                    >
-                      <Link to="/nodes">
-                        Nodes <ArrowRight className="size-3.5" />
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
+                {!isCurrent && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentClusterId(c.id)}
+                  >
+                    Switch to
+                  </Button>
+                )}
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 text-muted-foreground hover:text-destructive"
+                  disabled={deleting === c.id}
+                  onClick={() => handleDelete(c.id)}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
               </Card>
             );
           })}
         </div>
       )}
+
+      <AddClusterSheet open={sheetOpen} onOpenChange={setSheetOpen} />
     </div>
   );
 }

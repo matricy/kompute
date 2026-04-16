@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-from models import ActivityEntry, Cluster, Node, Workload
+from models import ActivityEntry, Cluster, Node, Workload, ClusterStatus
 
 
 def _ago(days: float = 0, hours: float = 0, minutes: float = 0) -> datetime:
@@ -22,7 +22,7 @@ def seed() -> None:
     home_cluster = Cluster(
         id="cl_home_lab",
         name="home-lab",
-        status="healthy",
+        status=ClusterStatus.HEALTHY,
         version="k3s v1.28",
         created_at=_ago(days=60),
         control_plane_endpoint="https://10.0.1.12:6443",
@@ -31,7 +31,7 @@ def seed() -> None:
     cloud_cluster = Cluster(
         id="cl_prod_cloud",
         name="prod-cloud",
-        status="degraded",
+        status=ClusterStatus.DEGRADED,
         version="k3s v1.28",
         created_at=_ago(days=41),
         control_plane_endpoint="https://78.46.12.88:6443",

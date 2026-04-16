@@ -34,7 +34,6 @@ def test_parse_populated_config() -> None:
           "id": "cl_home_lab",
           "name": "home-lab",
           "provider": "hetzner",
-          "cloud_account_id": "acc_hetzner_7f3a2c",
           "kubeconfig_path": "kubeconfigs/cl_home_lab.yaml",
           "ssh_key_path": "ssh/cl_home_lab",
           "node_token_keyring_ref": "cluster:cl_home_lab:node_token",
@@ -48,7 +47,6 @@ def test_parse_populated_config() -> None:
     assert len(config.cloud_accounts) == 1
     assert config.cloud_accounts[0].provider == "hetzner"
     assert len(config.clusters) == 1
-    assert config.clusters[0].cloud_account_id == "acc_hetzner_7f3a2c"
     assert config.clusters[0].name == "home-lab"
 
 

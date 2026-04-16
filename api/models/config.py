@@ -17,8 +17,8 @@ class CloudAccountRef(BaseModel):
 class ClusterRecord(BaseModel):
     id: str
     name: str
-    provider: CloudProvider
-    cloud_account_id: str
+    version: str = "k3s v1.28"
+    labels: dict[str, str] = Field(default_factory=dict)
     kubeconfig_path: str
     ssh_key_path: str
     node_token_keyring_ref: str

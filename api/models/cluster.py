@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Literal
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
-ClusterStatus = Literal["healthy", "degraded", "down", "provisioning"]
+
+class ClusterStatus(StrEnum):
+    HEALTHY = "healthy"
+    DEGRADED = "degraded"
+    DOWN = "down"
+    PROVISIONING = "provisioning"
+    EMPTY = "empty"
 
 
 class Cluster(BaseModel):

@@ -10,14 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useClusters } from "@/context/cluster-context";
-import { cn } from "@/lib/utils";
-
-const statusColor: Record<string, string> = {
-  healthy: "bg-primary",
-  degraded: "bg-yellow-500",
-  down: "bg-destructive",
-  provisioning: "bg-blue-500",
-};
 
 export function ClusterSwitcher() {
   const { clusters, currentCluster, setCurrentClusterId } = useClusters();
@@ -29,20 +21,12 @@ export function ClusterSwitcher() {
           type="button"
           className="group flex w-full items-center gap-2 rounded-md border border-[#1e1e1e] bg-[#0a0a0a] px-2.5 py-2 text-left transition-colors hover:border-[#2a2a2a] hover:bg-surface-elevated"
         >
-          <span
-            className={cn(
-              "size-1.5 rounded-full",
-              currentCluster
-                ? statusColor[currentCluster.status] ?? "bg-muted-foreground"
-                : "bg-muted-foreground"
-            )}
-          />
           <div className="min-w-0 flex-1">
             <div className="truncate text-[12px] font-medium text-foreground">
               {currentCluster?.name ?? "No cluster"}
             </div>
             <div className="truncate font-mono text-[10px] text-muted-foreground">
-              {currentCluster?.version ?? "select a cluster"}
+              {currentCluster?.id ?? "select a cluster"}
             </div>
           </div>
           <ChevronsUpDown className="size-3.5 text-muted-foreground" />
@@ -58,12 +42,6 @@ export function ClusterSwitcher() {
               onSelect={() => setCurrentClusterId(c.id)}
               className="flex items-center gap-2"
             >
-              <span
-                className={cn(
-                  "size-1.5 rounded-full",
-                  statusColor[c.status] ?? "bg-muted-foreground"
-                )}
-              />
               <span className="flex-1 truncate text-[13px]">{c.name}</span>
               {isActive && <Check className="size-3.5 text-primary" />}
             </DropdownMenuItem>
